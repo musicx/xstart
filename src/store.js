@@ -2,6 +2,7 @@ const DEFAULTS = {
   engine: 'google',
   aiSelected: ['chatgpt', 'claude', 'gemini', 'grok', 'deepseek', 'qwen'],
   aiAutoSend: true,
+  aiHidden: [], // providers left out of the AI bar; a deny-list so newly added providers show up
   bookmarks: [
     ['GitHub', 'https://github.com'],
     ['YouTube', 'https://www.youtube.com'],

@@ -2,6 +2,7 @@ import { settings, saveSettings } from './store.js';
 import { ENGINES } from './search.js';
 import { SOURCES } from './sources.js';
 import { refresh, grantAndFlush, dirName } from './wallpaper.js';
+import { PROVIDERS } from './providers.js';
 
 const $ = (s) => document.querySelector(s);
 const INTERVALS = [[0, '每次打开新标签页'], [15, '15 分钟'], [60, '1 小时'], [360, '6 小时'], [1440, '每天']];
@@ -11,16 +12,19 @@ export function initSettings() {
 
   f.engine.replaceChildren(...Object.entries(ENGINES).map(([id, e]) => new Option(e.name, id)));
   f.interval.replaceChildren(...INTERVALS.map(([v, label]) => new Option(label, v)));
-  $('#sources').replaceChildren(...Object.entries(SOURCES).map(([id, s]) => {
+  const checkbox = (name, value, text) => {
     const l = document.createElement('label');
-    l.innerHTML = `<input type="checkbox" name="source" value="${id}"> <span></span>`;
-    l.querySelector('span').textContent = s.name;
+    l.innerHTML = `<input type="checkbox" name="${name}" value="${value}"> <span></span>`;
+    l.querySelector('span').textContent = text;
     return l;
-  }));
+  };
+  $('#sources').replaceChildren(...Object.entries(SOURCES).map(([id, s]) => checkbox('source', id, s.name)));
+  $('#ai-providers').replaceChildren(...PROVIDERS.map((p) => checkbox('aiProvider', p.id, p.name)));
 
   const fill = async () => {
     f.engine.value = settings.engine;
     f.autoSend.checked = settings.aiAutoSend;
+    for (const c of f.querySelectorAll('[name=aiProvider]')) c.checked = !settings.aiHidden.includes(c.value);
     for (const c of f.querySelectorAll('[name=source]')) c.checked = w.sources.includes(c.value);
     f.unsplashKey.value = w.unsplashKey;
     f.unsplashQuery.value = w.unsplashQuery;
@@ -33,6 +37,12 @@ export function initSettings() {
     const n = e.target.name;
     if (n === 'engine') { settings.engine = f.engine.value; saveSettings('engine'); window.dispatchEvent(new Event('xstart:settings')); return; }
     if (n === 'autoSend') { settings.aiAutoSend = f.autoSend.checked; saveSettings('aiAutoSend'); return; }
+    if (n === 'aiProvider') {
+      settings.aiHidden = [...f.querySelectorAll('[name=aiProvider]:not(:checked)')].map((c) => c.value);
+      saveSettings('aiHidden');
+      window.dispatchEvent(new Event('xstart:settings'));
+      return;
+    }
     w.sources = [...f.querySelectorAll('[name=source]:checked')].map((c) => c.value);
     w.unsplashKey = f.unsplashKey.value.trim();
     w.unsplashQuery = f.unsplashQuery.value.trim();

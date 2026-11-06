@@ -6,7 +6,8 @@ const $ = (s) => document.querySelector(s);
 export function initAI() {
   const box = $('#prompt'), chips = $('#providers'), btn = $('#ask');
 
-  const renderChips = () => chips.replaceChildren(...PROVIDERS.map((p) => {
+  const shown = (id) => !settings.aiHidden.includes(id);
+  const renderChips = () => chips.replaceChildren(...PROVIDERS.filter((p) => shown(p.id)).map((p) => {
     const c = document.createElement('button');
     c.type = 'button';
     c.className = 'chip' + (settings.aiSelected.includes(p.id) ? ' on' : '');
@@ -24,8 +25,9 @@ export function initAI() {
 
   const send = () => {
     const prompt = box.value.trim();
-    if (!prompt || !settings.aiSelected.length) return;
-    chrome.runtime.sendMessage({ type: 'ask', prompt, ids: settings.aiSelected, autoSend: settings.aiAutoSend });
+    const ids = settings.aiSelected.filter(shown);
+    if (!prompt || !ids.length) return;
+    chrome.runtime.sendMessage({ type: 'ask', prompt, ids, autoSend: settings.aiAutoSend });
   };
 
   const autosize = () => { box.style.height = 'auto'; box.style.height = `${Math.min(box.scrollHeight, 200)}px`; };
@@ -35,4 +37,5 @@ export function initAI() {
   });
   btn.onclick = send;
   renderChips();
+  window.addEventListener('xstart:settings', renderChips);
 }

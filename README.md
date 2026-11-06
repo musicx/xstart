@@ -2,8 +2,12 @@
 
 自用 Chrome 新标签页扩展（Manifest V3，纯 HTML/JS，无构建步骤）。
 
+![xstart 新标签页](docs/screenshot.jpg)
+
+<sub>截图背景：Andrew Ridley / [Unsplash](https://unsplash.com/photos/Kt5hRENuotI)（经 Picsum）</sub>
+
 - **搜索**：Google / Bing / 百度 / DuckDuckGo / Brave，点左侧图标切换；Enter 当前页打开，⌘/Ctrl+Enter 新标签打开；`/` 聚焦。
-- **AI 对话**：一次输入，按选中的服务商各开一个标签页并自动填入、发送（用你已登录的网页账号，不需要 API key）。支持 ChatGPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、豆包、Perplexity；设置里可关闭「自动发送」只填入。
+- **AI 对话**：一次输入，按选中的服务商各开一个标签页并自动填入、发送（用你已登录的网页账号，不需要 API key）。支持 ChatGPT、Claude、Gemini、Grok、DeepSeek、Qwen、Kimi、豆包、Perplexity；设置里可选择 AI 栏显示哪些服务商，也可关闭「自动发送」只填入。
 - **书签**：添加时自动采集站点图标（页面 `<link>` 图标优先，其次 Google favicon 服务、`/favicon.ico`），缓存为 data URL；拖拽排序，悬停 `⋯` 编辑。
 - **背景**：Bing 每日一图、Google Earth View、Unsplash（需 Access Key）、Picsum；可设刷新间隔，可把每张刷新到的图保存到你选的目录。
 
