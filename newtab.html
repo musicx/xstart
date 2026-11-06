@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>新标签页</title>
+  <link rel="stylesheet" href="src/style.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <div id="bg"><img alt=""><img alt=""></div>
+  <div id="shade"></div>
+
+  <main>
+    <section id="clock"><div id="time"></div><div id="date"></div></section>
+
+    <form id="search" class="bar" autocomplete="off">
+      <button type="button" id="engine-btn"><img alt=""></button>
+      <input id="q" type="search" autofocus>
+      <ul id="engine-menu" class="menu" hidden></ul>
+    </form>
+
+    <section id="ai" class="bar">
+      <div class="ai-input">
+        <span class="ai-mark">
+          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M11 3c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5C8.1 9.9 10.4 7.6 11 3zm7.5 11c.3 2 1.2 3 3.2 3.2-2 .3-2.9 1.2-3.2 3.2-.3-2-1.2-2.9-3.2-3.2 2-.2 2.9-1.2 3.2-3.2z"/></svg>
+        </span>
+        <textarea id="prompt" rows="1" placeholder="问 AI · Enter 发给选中的服务商，Shift+Enter 换行"></textarea>
+        <button type="button" id="ask" title="发送">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 4l-7 7h4.5v9h5v-9H19z"/></svg>
+        </button>
+      </div>
+      <div id="providers" class="chips"></div>
+    </section>
+
+    <section id="bookmarks"></section>
+  </main>
+
+  <footer>
+    <a id="credit" target="_blank" rel="noreferrer">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+      <span><span class="title"></span><span class="by"></span></span>
+    </a>
+    <div class="tools">
+      <button type="button" id="pending" hidden>
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M5 20h14v-2H5zm7-3 5-5h-3V4h-4v8H7z"/></svg><span></span>
+      </button>
+      <button type="button" id="next" title="换一张背景">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 7.73 10h-2.08A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"/></svg>
+      </button>
+      <button type="button" id="open-settings" title="设置">
+        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M19.14 12.94a7.07 7.07 0 0 0 0-1.88l2.03-1.58-1.92-3.32-2.39.96a7.03 7.03 0 0 0-1.62-.94L14.88 3.6h-3.84l-.36 2.58c-.58.24-1.12.56-1.62.94l-2.39-.96-1.92 3.32 2.03 1.58a7.07 7.07 0 0 0 0 1.88l-2.03 1.58 1.92 3.32 2.39-.96c.5.38 1.04.7 1.62.94l.36 2.58h3.84l.36-2.58c.58-.24 1.12-.56 1.62-.94l2.39.96 1.92-3.32zM12.96 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>
+      </button>
+    </div>
+  </footer>
+
+  <aside id="settings">
+    <form>
+      <header><h2>设置</h2><button type="button" id="close-settings" title="关闭">✕</button></header>
+
+      <h4>搜索</h4>
+      <label class="row">默认搜索引擎 <select name="engine"></select></label>
+
+      <h4>AI 对话</h4>
+      <label class="row"><span>填入后自动发送</span><input type="checkbox" name="autoSend"></label>
+      <p class="hint">关闭后只填入输入框，方便先在各家页面选模型再手动发送。</p>
+
+      <h4>背景</h4>
+      <div id="sources" class="checks"></div>
+      <label class="col">Unsplash Access Key
+        <input name="unsplashKey" type="password" placeholder="unsplash.com/developers 免费申请">
+      </label>
+      <label class="col">Unsplash 关键词 <input name="unsplashQuery" placeholder="留空为随机"></label>
+      <label class="row">刷新间隔 <select name="interval"></select></label>
+      <label class="row"><span>保存所有刷新到的图片</span><input type="checkbox" name="save"></label>
+      <div class="row">保存目录 <span><b id="dir-name"></b> <button type="button" id="pick-dir">选择…</button></span></div>
+      <p class="hint">同名文件（同一张图）不会重复保存。浏览器重启后若需重新授权，右下角会出现待保存按钮。</p>
+    </form>
+  </aside>
+
+  <dialog id="bm-dialog">
+    <form method="dialog">
+      <h3></h3>
+      <label>网址 <input name="url" required placeholder="example.com"></label>
+      <label>名称 <input name="title" placeholder="留空则自动获取"></label>
+      <label>图标 URL <input name="icon" placeholder="留空则自动采集"></label>
+      <div class="actions">
+        <button type="button" class="delete">删除</button>
+        <button type="button" class="refetch">重新采集图标</button>
+        <span></span>
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="save" class="primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+</body>
+</html>
