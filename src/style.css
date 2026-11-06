@@ -97,7 +97,9 @@ main > :nth-child(4) { animation-delay: .18s; }
 .bar ::placeholder { color: var(--fg-muted); }
 
 /* ---- search ---- */
-#search { display: flex; align-items: center; height: 60px; padding: 0 10px; border-radius: 999px; }
+/* z-index: the bar (backdrop-filter, rise animation) is its own stacking context, so the engine
+   menu's z-index only counts inside it; lift the whole bar above the AI panel that follows. */
+#search { z-index: 2; display: flex; align-items: center; height: 60px; padding: 0 10px; border-radius: 999px; }
 #engine-btn {
   display: grid; place-items: center; width: 42px; height: 42px; flex: none;
   border: 0; border-radius: 50%; background: transparent;
@@ -113,8 +115,8 @@ main > :nth-child(4) { animation-delay: .18s; }
   position: absolute; top: 68px; left: 0; z-index: 10;
   min-width: 200px; margin: 0; padding: 6px; list-style: none;
   color: var(--text);
-  background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
-  backdrop-filter: blur(22px);
+  /* near-opaque: backdrop-filter doesn't work nested inside the bar's own backdrop-filter */
+  background: rgba(24, 26, 32, .97); border: 1px solid var(--line); border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0,0,0,.35);
 }
 .menu li { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; }
