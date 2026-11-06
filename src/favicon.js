@@ -8,7 +8,10 @@ export async function fetchSiteInfo(pageUrl) {
   let title = '';
   try {
     const res = await fetch(pageUrl, { signal: AbortSignal.timeout(TIMEOUT) });
-    const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+    // Chrome 156+ logs a CSP violation for every inline handler (onload=, onclick=…) in parsed HTML,
+    // even though the inert document never runs them; rename those attributes before parsing.
+    const html = (await res.text()).replace(/([\s/])on[a-z]+\s*=/gi, '$1data-x=');
+    const doc = new DOMParser().parseFromString(html, 'text/html');
     title = doc.querySelector('title')?.textContent.trim() ?? '';
     const base = doc.querySelector('base[href]')?.getAttribute('href');
     const baseUrl = base ? new URL(base, res.url).href : res.url;
